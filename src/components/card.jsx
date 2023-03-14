@@ -1,11 +1,14 @@
 import React from 'react'
+import { NavLink } from 'react-router-dom';
 
 export const card = (props) => {
   return (
+    <NavLink>
     <div className='card_container'>
         <img src={props.poster}></img>
-        <h5>{props.title}</h5>
+        <h4>{props.title}</h4>
     </div>
+    </NavLink>
   )
 }
 
