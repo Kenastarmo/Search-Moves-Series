@@ -1,15 +1,15 @@
-import React from 'react'
-import { NavLink } from 'react-router-dom';
+import React from "react";
+import { NavLink } from "react-router-dom";
 
 export const card = (props) => {
   return (
-    <NavLink>
-    <div className='card_container'>
-        <img src={props.poster}></img>
+    <NavLink to="/oneItem">
+      <div className="card_container">
+        <img src={props.poster} alt="" />
         <h4>{props.title}</h4>
-    </div>
+      </div>
     </NavLink>
-  )
-}
+  );
+};
 
 export default card;
