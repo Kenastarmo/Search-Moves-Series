@@ -1,24 +1,13 @@
 import axios from "axios";
 
-export const serviceapi = (value, type) => {
-  const API = `http://www.omdbapi.com/?type=${type}&apikey=3c0bf875&s=`;
-
-  // axios.get(API + searchtvshows)
-
-  // .then((response) => {
-  //   const list = response.data.Search;
-  //   console.log(response.data.Search)
-  //   setTvshows(list)
-  // })
-  // .catch((error) => {
-  //   console.error(error);
-  // });
-
+export const serviceapi = async (url) => {
+  // const API = `http://www.omdbapi.com/?type=${type}&apikey=3c0bf875&s=`;
+  const API = `http://www.omdbapi.com/`;
+  const APIkey = `3c0bf875`;
   return axios
-    .get(API + value)
+    .get(`${API}?apikey=${APIkey}&${url}`)
     .then((response) => {
-      const data = response.data.Search;
-      return data;
+      return response.data;
     })
     .catch((error) => {
       console.error(error);

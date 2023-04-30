@@ -1,39 +1,39 @@
-import React from "react";
-import { useState, useEffect } from "react";
-import axios from "axios";
+//React
+import React, { useState, useEffect, useContext } from "react";
 import "../App.css";
-import Card from "../components/card";
-import { BiSearch } from "react-icons/bi";
-const API = "http://www.omdbapi.com/?type=series&apikey=3c0bf875&s=";
 
-export const Tvshows = () => {
+//Components
+import Card from "../components/card";
+
+//React icons
+import { BiSearch } from "react-icons/bi";
+
+//Debounce
+import { useDebounce } from "use-debounce";
+
+//Context
+import { globalContext } from "../context/context";
+
+export const Tvshows = ({ type }) => {
+  const context = useContext(globalContext);
   const [searchtvshows, setSearchtvshows] = useState("");
-  const [tvshows, setTvshows] = useState([]);
+  // const [tvshows, setTvshows] = useState([]);
+  const [value] = useDebounce(searchtvshows, 1000);
 
   const handleSearchTvshows = (event) => {
     setSearchtvshows(event.target.value);
   };
 
   useEffect(() => {
-    setTvshows([]);
-    if (searchtvshows.length >= 3) {
-      axios
-        .get(API + searchtvshows)
-
-        .then((response) => {
-          const list = response.data.Search;
-          console.log(response.data.Search);
-          setTvshows(list);
-        })
-        .catch((error) => {
-          console.error(error);
-        });
+    // setTvshows([]);
+    if (value.length >= 3) {
+      context.fetchMoviesSeries(value, type);
     }
-  }, [searchtvshows]);
+  }, [value]);
 
-  const DisplayTvshows = tvshows?.map((item) => {
-    return <Card key={item.imdbID} title={item.Title} poster={item.Poster} />;
-  });
+  // const DisplayTvshows = tvshows?.map((item) => {
+  //   return <Card key={item.imdbID} title={item.Title} poster={item.Poster} />;
+  // });
 
   return (
     <div className="main_container">
@@ -48,7 +48,24 @@ export const Tvshows = () => {
           placeholder="Search..."
         ></input>
       </div>
-      <div className="results_container">{DisplayTvshows}</div>
+      <div className="results_container">
+        {/* {tvshows &&
+          tvshows.map((item) => {
+            return (
+              <Card key={item.imdbID} title={item.Title} poster={item.Poster} />
+            );
+          })} */}
+        {context.data?.map((item) => {
+          return (
+            <Card
+              key={item.imdbID}
+              id={item.imdbID}
+              title={item.Title}
+              poster={item.Poster}
+            />
+          );
+        })}
+      </div>
     </div>
   );
 };

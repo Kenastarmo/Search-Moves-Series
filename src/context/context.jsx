@@ -2,12 +2,18 @@ import React, { createContext, useReducer } from "react";
 import { serviceapi } from "../service/serviceapi";
 import reducer from "./reducer";
 
+// const initialState = {
+//   movies_series: {
+//     data: [],
+//     error: "",
+//   },
+//   one_movie_serie: null,
+// };
+
 const initialState = {
-  movies_series: {
-    data: [],
-    error: "",
-  },
-  one_movie_serie: null,
+  data: [],
+  error: "",
+  one_movie_serie: {},
 };
 
 export const globalContext = createContext(initialState);
@@ -16,28 +22,41 @@ export const MovieProvider = (props) => {
   const [state, dispatch] = useReducer(reducer, initialState);
 
   const fetchMoviesSeries = async (value, type) => {
-    // try {
-    //   const response = await serviceapi(value, type);
-    //   dispatch({
-    //     type: "GET_MOVIES_SUCCESS",
-    //     payload: response.data,
-    //   });
-    // } catch (error) {
-    //   console.error(error);
-    // }
+    const response = await serviceapi(`type=${type}&s=${value}`);
 
-    serviceapi(value, type)
-      .then((data) => {
-        dispatch({
-          type: "GET_MOVIES_SUCCESS",
-          payload: { data: data.data, total: data.total },
-        });
-      })
-      .catch((error) => console.log(error));
+    dispatch({
+      type: "GET_MOVIES_SUCCESS",
+      payload: response,
+    });
+  };
+
+  const getOneData = async (data) => {
+    const response = await serviceapi(`i=${data}`);
+
+    dispatch({
+      type: "GET_ONE_MOVIE_SERIE",
+      payload: response,
+    });
+  };
+
+  const clearMoviesSeries = () => {
+    dispatch({ type: "CLEAR_MOVIES" });
+  };
+  const clearOneMovieSerie = () => {
+    dispatch({ type: "CLEAR_ONE_MOVIE_SERIE" });
   };
 
   return (
-    <globalContext.Provider value={{ fetchMoviesSeries }}>
+    <globalContext.Provider
+      value={{
+        fetchMoviesSeries,
+        getOneData,
+        clearMoviesSeries,
+        clearOneMovieSerie,
+        data: state.data,
+        one_movie_serie: state.one_movie_serie,
+      }}
+    >
       {props.children}
     </globalContext.Provider>
   );

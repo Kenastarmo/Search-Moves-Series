@@ -1,22 +1,25 @@
+//React
 import React, { useState, useEffect, useContext } from "react";
-// import axios from "axios";
 import "../App.css";
-import Card from "../components/card";
-import { BiSearch } from "react-icons/bi";
-import { useDebounce } from "use-debounce";
-import { serviceapi } from "../service/serviceapi";
-//Naslovi
 
+//Components
+import Card from "../components/card";
+
+//React icons
+import { BiSearch } from "react-icons/bi";
+
+//Debounce
+import { useDebounce } from "use-debounce";
+
+//Context
 import { globalContext } from "../context/context";
 
 export const Movies = ({ type }) => {
   const context = useContext(globalContext);
 
-  // const API = `http://www.omdbapi.com/?type=${type}&apikey=3c0bf875&s=`;
   //State
   const [search, setSearch] = useState("");
   const [value] = useDebounce(search, 1000);
-  const [Movies, setMovies] = useState([]);
 
   //Handlers
   const handleSearch = (event) => {
@@ -24,41 +27,38 @@ export const Movies = ({ type }) => {
   };
 
   useEffect(() => {
-    setMovies([]);
     if (value.length >= 3) {
-      // serviceapi(value, type)
-      //   .then((data) => {
-      //     console.log(data);
-      //     setMovies(data);
-      //   })
-      //   .catch((error) => console.log(error));
       context.fetchMoviesSeries(value, type);
-      setMovies(context.movies_series.data.Search);
+    } else {
+      context.clearMoviesSeries();
     }
   }, [value]);
 
   return (
     <div className="main_container">
-      {/* <Search /> */}
-
       <div className="search_container">
         <div>
           <BiSearch />
         </div>
-        {/* <input
-          type="search"
-          value={search}
-          onChange={handleSearch}
-          placeholder="Search..."
-        ></input> */}
 
         <input onChange={handleSearch} placeholder="Search..." />
       </div>
 
       <div className="results_container">
-        {Movies?.map((item) => {
+        {/* {Movies?.map((item) => {
           return (
             <Card key={item.imdbID} title={item.Title} poster={item.Poster} />
+          );
+        })} */}
+
+        {context.data?.map((item) => {
+          return (
+            <Card
+              key={item.imdbID}
+              id={item.imdbID}
+              title={item.Title}
+              poster={item.Poster}
+            />
           );
         })}
       </div>
